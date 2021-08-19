@@ -1,5 +1,6 @@
 package com.omnom.SpringDictionary.services;
 
+import com.omnom.SpringDictionary.entities.Language;
 import com.omnom.SpringDictionary.entities.Original;
 import com.omnom.SpringDictionary.repositories.OriginalRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +20,7 @@ public class OriginalService {
         this.repository = repository;
     }
 
-    public List<Original> readAll(String language) {
+    public List<Original> readAll(Language language) {
         return repository.findByLanguage(language);
     }
 

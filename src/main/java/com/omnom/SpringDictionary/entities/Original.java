@@ -12,21 +12,22 @@ public class Original {
     private long id;
     @Column(name = "original_word")
     private String originalWord;
-    @Column(name = "language")
-    private String language;
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "language_id")
+    private Language language;
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "original", cascade = CascadeType.ALL)
     private List<Translate> translates;
 
     public Original() {
     }
 
-    public Original(String originalWord, String language, List<Translate> translates) {
+    public Original(String originalWord, Language language, List<Translate> translates) {
         this.originalWord = originalWord;
         this.language = language;
         this.translates = translates;
     }
 
-    public Original(long id, String originalWord, String language, List<Translate> translates) {
+    public Original(long id, String originalWord, Language language, List<Translate> translates) {
         this.id = id;
         this.originalWord = originalWord;
         this.language = language;
@@ -49,11 +50,11 @@ public class Original {
         this.originalWord = originalWord;
     }
 
-    public String getLanguage() {
+    public Language getLanguage() {
         return language;
     }
 
-    public void setLanguage(String language) {
+    public void setLanguage(Language language) {
         this.language = language;
     }
 
