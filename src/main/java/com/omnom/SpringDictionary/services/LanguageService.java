@@ -1,7 +1,6 @@
 package com.omnom.SpringDictionary.services;
 
 import com.omnom.SpringDictionary.entities.Language;
-import com.omnom.SpringDictionary.entities.Original;
 import com.omnom.SpringDictionary.repositories.LanguageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,7 +34,9 @@ public class LanguageService {
             repository.save(language);
         }
     }
-
+    public Language findById(long id){
+        return repository.getById(id);
+    }
     public void delete(long id) {
         if (repository.existsById(id)) {
             repository.delete(repository.getById(id));

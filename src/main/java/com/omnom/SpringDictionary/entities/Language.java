@@ -1,5 +1,7 @@
 package com.omnom.SpringDictionary.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.List;
 
@@ -15,19 +17,20 @@ public class Language {
     @Column(name = "regexp")
     private String regexp;
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "language", cascade = CascadeType.ALL)
-    private List<Original> originals;
+    @JsonIgnore
+    private List<Entry> entries;
 
-    public Language(long languageId, String languageName, String regexp, List<Original> originals) {
+    public Language(long languageId, String languageName, String regexp, List<Entry> entries) {
         this.id = languageId;
         this.languageName = languageName;
         this.regexp = regexp;
-        this.originals = originals;
+        this.entries = entries;
     }
 
-    public Language(String languageName, String regexp, List<Original> originals) {
+    public Language(String languageName, String regexp, List<Entry> entries) {
         this.languageName = languageName;
         this.regexp = regexp;
-        this.originals = originals;
+        this.entries = entries;
     }
 
     public Language() {
@@ -49,12 +52,12 @@ public class Language {
         this.languageName = languageName;
     }
 
-    public List<Original> getOriginals() {
-        return originals;
+    public List<Entry> getEntries() {
+        return entries;
     }
 
-    public void setOriginals(List<Original> originals) {
-        this.originals = originals;
+    public void setEntries(List<Entry> entries) {
+        this.entries = entries;
     }
 
     public String getRegexp() {

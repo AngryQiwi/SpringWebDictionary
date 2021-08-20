@@ -1,18 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Интергалактический словарь</title>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-</head>
-<script>
-    $(document).ready(function (){
-        console.log("AAaaaaaaa")
-    });
-</script>
-<body>
-<div id="index">
-
-</div>
-</body>
+    <head>
+        <meta charset="UTF-8">
+        <title>Интергалактический словарь</title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    </head>
+    <script>
+        $(document).ready(function (){
+            $.get('/get_languages', function(data){
+                console.log(data);
+                let dictView = "<table>";
+                for(i = 0; i < data.length; i++){
+                    dictView = dictView + "<tr><a href=\"/dictionary/" + data[i].id + "\">" + data[i].languageName + "</a></tr></table>";
+                }
+                $("#index").html(dictView);
+            });
+        });
+    </script>
+    <body>
+    <h3>Выберите словарь</h3>
+        <div id="index">
+        </div>
+    </body>
 </html>

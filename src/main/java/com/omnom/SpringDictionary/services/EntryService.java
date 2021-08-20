@@ -1,26 +1,58 @@
 package com.omnom.SpringDictionary.services;
 
 import com.omnom.SpringDictionary.entities.Entry;
-import com.omnom.SpringDictionary.entities.Original;
-import com.omnom.SpringDictionary.entities.Translate;
-import com.omnom.SpringDictionary.repositories.OriginalRepository;
-import com.omnom.SpringDictionary.repositories.TranslateRepository;
+import com.omnom.SpringDictionary.repositories.EntryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
 @Transactional
 public class EntryService {
-    private final OriginalRepository originalRepository;
-    private final TranslateRepository translateRepository;
+    private final EntryRepository repository;
+
     @Autowired
-    public EntryService(OriginalRepository originalRepository, TranslateRepository translateRepository) {
-        this.originalRepository = originalRepository;
-        this.translateRepository = translateRepository;
+    public EntryService(EntryRepository repository) {
+        this.repository = repository;
     }
 
+    public List<Entry> readAll() {
+        return repository.findAll();
+    }
+
+    public List<Entry> findByLanguage(long language) {
+        return repository.findByLanguageId(language);
+    }
+
+    public void save(Entry entry) {
+        repository.save(entry);
+    }
+
+    public void update(long id, Entry entry) {
+        if (repository.existsById(id)) {
+            entry.setEntryId(id);
+            repository.save(entry);
+        }
+    }
+
+    public void delete(long id) {
+        if (repository.existsById(id)) {
+            repository.delete(repository.getById(id));
+        }
+    }
+
+    public List<Entry> getEntriesByOriginalOrTranslateInDictionary(String pattern, String language) {
+        List<Entry> fundedEntries;
+        fundedEntries = repository.findByOriginalContainsAndLanguage(pattern, language);
+        fundedEntries.addAll(repository.findByTranslateContainsAndLanguage(pattern, language));
+        return fundedEntries;
+    }
+    public List<Entry> getEntriesByOriginalOrTranslateAnywhere(String pattern){
+        List<Entry> fundedEntries;
+        fundedEntries = repository.findByOriginalContains(pattern);
+        fundedEntries.addAll(repository.findByTranslateContains(pattern));
+        return fundedEntries;
+    }
 }

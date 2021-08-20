@@ -2,9 +2,43 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Просмотр данных</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 </head>
-<body>
+<script>
+    function deleteEntry(entryId){
+        $.ajax({
+            url: '/delete_entry?entry_id='+entryId,
+            type: 'DELETE',
+            success: function(){
+                showEntries();
+            }
+        })
+    }
 
+    function showEntries(){
+        let language = window.location.pathname.split("/")[2];
+        $.get('/get_entries?language='+language, function(data){
+            var dictView = "<table>";
+            for(i = 0; i < data.length; i++){
+                dictView = dictView + "<tr>" +
+                "<td>" + data[i].original + "</td>" +
+                "<td> - </td>" +
+                "<td>" + data[i].translate + "</td>" +
+                "<td><button onclick=\"deleteEntry("+ data[i].entryId +")\">Удалить</button></td>" +
+                "<td><button><a href=\"/edit_entry?entryId="+data[i].entryId+"&key="+data[i].original+"&value="+data[i].translate+"&language="+language+"\">Редактировать</a></button></td>" +
+                "</tr>";
+            }
+            dictView = dictView + "</table>";
+            $("#dictTable").html(dictView);
+        });
+    }
+    $(document).ready(function (){
+        showEntries();
+    });
+</script>
+<body>
+<button></button>
+<div id="dictTable"></div>
 </body>
 </html>
