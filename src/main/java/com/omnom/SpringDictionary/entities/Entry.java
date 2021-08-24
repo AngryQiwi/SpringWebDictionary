@@ -7,7 +7,7 @@ public class Entry {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "entry_id")
-    private long entryId;
+    private Long entryId;
     @Column(name = "original")
     private String original;
     @Column(name = "translate")
@@ -29,14 +29,19 @@ public class Entry {
         this.language = language;
     }
 
+    public Entry(String original, String translate) {
+        this.original = original;
+        this.translate = translate;
+    }
+
     public Entry() {
     }
 
-    public long getEntryId() {
+    public Long getEntryId() {
         return entryId;
     }
 
-    public void setEntryId(long entryId) {
+    public void setEntryId(Long entryId) {
         this.entryId = entryId;
     }
 

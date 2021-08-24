@@ -15,30 +15,45 @@
             }
         })
     }
-
-    function showEntries(){
+    function showEntries(pattern){
         let language = window.location.pathname.split("/")[2];
-        $.get('/get_entries?language='+language, function(data){
+        $.get('/find_entries_in_dictionary?pattern='+pattern+'&language='+language, function(data){
             var dictView = "<table>";
-            for(i = 0; i < data.length; i++){
-                dictView = dictView + "<tr>" +
-                "<td>" + data[i].original + "</td>" +
-                "<td> - </td>" +
-                "<td>" + data[i].translate + "</td>" +
-                "<td><button onclick=\"deleteEntry("+ data[i].entryId +")\">Удалить</button></td>" +
-                "<td><button><a href=\"/edit_entry?entryId="+data[i].entryId+"&key="+data[i].original+"&value="+data[i].translate+"&language="+language+"\">Редактировать</a></button></td>" +
-                "</tr>";
+            if(data.length == 0){
+                dictView = "<h2>Значений не найдено</h2>";
             }
-            dictView = dictView + "</table>";
+            else{
+                for(i = 0; i < data.length; i++){
+                    dictView = dictView + "<tr>" +
+                    "<td>" + data[i].original + "</td>" +
+                    "<td> - </td>" +
+                    "<td>" + data[i].translate + "</td>" +
+                    "<td><button onclick=\"deleteEntry("+ data[i].entryId +")\">Удалить</button></td>" +
+                    "<td><a href=\"/edit_entry?entryId="+data[i].entryId+"&key="+data[i].original+"&value="+data[i].translate+"&language="+language+"\">Редактировать</a></td>" +
+                    "</tr>";
+                }
+                dictAdd = "<a href=\"/add_entry?language="+language+"\">Добавить</a>"
+                dictView = dictView + "</table>";
+                dictSearch = "<input placeholder=\"Поиск\" type=\"text\" onchange=\"searchEntries(this.value, "+data[0].language+")\"/><div/>";
+                $("#dictSearch").html(dictSearch);
+            }
+            $("#dictAdd").html(dictAdd);
             $("#dictTable").html(dictView);
         });
     }
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById("dictSearch").addEventListener('input',function (){
+            showEntries(document.getElementById("dictSearch").value);
+        });
+    });
     $(document).ready(function (){
-        showEntries();
+    let pattern = ''
+        showEntries(pattern);
     });
 </script>
 <body>
-<button></button>
+<input id="dictSearch" placeholder="Поиск" type="text"/>
+<div id="dictAdd"></div>
 <div id="dictTable"></div>
 </body>
 </html>

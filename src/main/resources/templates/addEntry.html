@@ -1,14 +1,62 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 </head>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        function addEntry(){
+            $.ajax({
+                type: 'POST',
+                url: "/upload_entry",
+                data: JSON.stringify({
+                    entry: {
+                        original: document.getElementById("original").value,
+                        translate: document.getElementById("translate").value
+                    },
+                    languageId: new URLSearchParams(window.location.search).get('language')
+                }),
+                contentType: 'application/json; charset=utf-8',
+                success: function (result) {
+                    window.location.replace("/dictionary/" + new URLSearchParams(window.location.search).get('language'));
+                }
+            });
+
+        }
+        function updateEntry(){
+        let originalStr = document.getElementById("original").value.length != 0 ? document.getElementById("original").value : new URLSearchParams(window.location.search).get('key');
+        let translateStr = document.getElementById("translate").value.length != 0 ? document.getElementById("translate").value : new URLSearchParams(window.location.search).get('value');
+                $.ajax({
+                type: 'PUT',
+                url: "/upload_entry?entry_id="+new URLSearchParams(window.location.search).get('entryId'),
+                data: JSON.stringify({
+                    entry: {
+                        original: originalStr,
+                        translate: translateStr
+                    },
+                    languageId: new URLSearchParams(window.location.search).get('language')
+                }),
+                contentType: 'application/json; charset=utf-8',
+                success: function (result) {
+                    window.location.replace("/dictionary/" + new URLSearchParams(window.location.search).get('language'));
+                }
+            });
+        }
+        document.getElementById("dictAdd").addEventListener('click',function (){
+            var addOrUpdate = new URLSearchParams(window.location.search).get('entryId');
+            if(addOrUpdate == undefined || addOrUpdate == null){
+                addEntry();
+            }else{
+                updateEntry();
+            }
+        });
+    });
+</script>
 <body>
-<form>
-    <div><input placeholder="${entry.key}"></div>
-    <div><input placeholder="${entry.value}"></div>
-    <div><input type="submit"></div>
-</form>
+    <div><input id="original" th:placeholder="${session.entry != null?session.entry.original:'Слово'}"></div>
+    <div><input id="translate" th:placeholder="${session.entry != null?session.entry.translate:'Перевод'}"></div>
+    <div><input id="dictAdd" type="submit"></div>
 </body>
 </html>

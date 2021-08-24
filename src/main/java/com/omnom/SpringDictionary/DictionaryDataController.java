@@ -24,7 +24,7 @@ public class DictionaryDataController {
         return entryService.findByLanguage(language);
     }
     @GetMapping("/find_entries_in_dictionary")
-    public List<Entry> findEntriesInDictionary(@RequestParam("pattern") String pattern, @RequestParam("language") String language){
+    public List<Entry> findEntriesInDictionary(@RequestParam("pattern") String pattern, @RequestParam("language") long language){
         return entryService.getEntriesByOriginalOrTranslateInDictionary(pattern, language);
     }
     @GetMapping("/find_entries_anywhere")
@@ -39,12 +39,40 @@ public class DictionaryDataController {
     public void deleteEntry(@RequestParam("entry_id") long entryId){
         entryService.delete(entryId);
     }
-    @PutMapping("/update_entry")
-    public void updateEntry(@RequestParam("entry_id") long entryId, @RequestBody Entry entry){
-        entryService.update(entryId, entry);
+
+    @PutMapping("/upload_entry")
+    public void updateEntry(@RequestParam("entry_id") long entryId, @RequestBody EntryHolder entryHolder){
+        entryHolder.getEntry().setLanguage(languageService.findById(entryHolder.getLanguageId()));
+        entryService.update(entryId, entryHolder.getEntry());
     }
-    @PostMapping("/add_entry")
-    public void addEntry(@RequestBody Entry entry){
-        entryService.save(entry);
+    @PostMapping("/upload_entry")
+    public void addEntry(@RequestBody EntryHolder entryHolder){
+        entryHolder.getEntry().setLanguage(languageService.findById(entryHolder.getLanguageId()));
+        entryService.save(entryHolder.getEntry());
+    }
+    public static class EntryHolder{
+        private Entry entry;
+        private Long languageId;
+
+        public EntryHolder(Entry entry, Long languageId) {
+            this.entry = entry;
+            this.languageId = languageId;
+        }
+
+        public Entry getEntry() {
+            return entry;
+        }
+
+        public void setEntry(Entry entry) {
+            this.entry = entry;
+        }
+
+        public Long getLanguageId() {
+            return languageId;
+        }
+
+        public void setLanguageId(Long languageId) {
+            this.languageId = languageId;
+        }
     }
 }

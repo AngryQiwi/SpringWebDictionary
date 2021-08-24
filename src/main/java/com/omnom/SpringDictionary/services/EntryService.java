@@ -43,10 +43,14 @@ public class EntryService {
         }
     }
 
-    public List<Entry> getEntriesByOriginalOrTranslateInDictionary(String pattern, String language) {
+    public List<Entry> getEntriesByOriginalOrTranslateInDictionary(String pattern, long language) {
         List<Entry> fundedEntries;
-        fundedEntries = repository.findByOriginalContainsAndLanguage(pattern, language);
-        fundedEntries.addAll(repository.findByTranslateContainsAndLanguage(pattern, language));
+        fundedEntries = repository.findByOriginalContainsAndLanguageId(pattern, language);
+        for (Entry fundedEntry : repository.findByTranslateContainsAndLanguageId(pattern, language)) {
+            if(!fundedEntries.contains(fundedEntry)){
+                fundedEntries.add(fundedEntry);
+            }
+        }
         return fundedEntries;
     }
     public List<Entry> getEntriesByOriginalOrTranslateAnywhere(String pattern){
