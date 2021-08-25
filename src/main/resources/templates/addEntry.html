@@ -21,6 +21,11 @@
                 contentType: 'application/json; charset=utf-8',
                 success: function (result) {
                     window.location.replace("/dictionary/" + new URLSearchParams(window.location.search).get('language'));
+                },
+                statusCode: {
+                    400: function(){
+                      alert("Введены некорректные данные либо оставлены пустые поля.");
+                    },
                 }
             });
 
@@ -41,6 +46,11 @@
                 contentType: 'application/json; charset=utf-8',
                 success: function (result) {
                     window.location.replace("/dictionary/" + new URLSearchParams(window.location.search).get('language'));
+                },
+                statusCode: {
+                    400: function(){
+                      alert("Введены некорректные данные либо оставлены пустые поля.");
+                    },
                 }
             });
         }

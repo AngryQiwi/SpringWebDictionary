@@ -5,6 +5,8 @@ import com.omnom.SpringDictionary.entities.Language;
 import com.omnom.SpringDictionary.services.EntryService;
 import com.omnom.SpringDictionary.services.LanguageService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -41,14 +43,14 @@ public class DictionaryDataController {
     }
 
     @PutMapping("/upload_entry")
-    public void updateEntry(@RequestParam("entry_id") long entryId, @RequestBody EntryHolder entryHolder){
+    public ResponseEntity<?> updateEntry(@RequestParam("entry_id") long entryId, @RequestBody EntryHolder entryHolder){
         entryHolder.getEntry().setLanguage(languageService.findById(entryHolder.getLanguageId()));
-        entryService.update(entryId, entryHolder.getEntry());
+        return entryService.update(entryId, entryHolder.getEntry()) ? new ResponseEntity<>(HttpStatus.OK) : new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
     @PostMapping("/upload_entry")
-    public void addEntry(@RequestBody EntryHolder entryHolder){
+    public ResponseEntity<?> addEntry(@RequestBody EntryHolder entryHolder){
         entryHolder.getEntry().setLanguage(languageService.findById(entryHolder.getLanguageId()));
-        entryService.save(entryHolder.getEntry());
+        return entryService.save(entryHolder.getEntry()) ? new ResponseEntity<>(HttpStatus.OK) : new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
     public static class EntryHolder{
         private Entry entry;
