@@ -1,7 +1,7 @@
 package com.omnom.SpringDictionary;
 
-import com.omnom.SpringDictionary.entities.Entry;
-import com.omnom.SpringDictionary.entities.Language;
+import com.omnom.SpringDictionary.repositories.entry.EntryEntity;
+import com.omnom.SpringDictionary.repositories.language.LanguageEntity;
 import com.omnom.SpringDictionary.services.EntryService;
 import com.omnom.SpringDictionary.services.LanguageService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,20 +22,20 @@ public class DictionaryDataController {
     }
 
     @GetMapping("/get_entries")
-    public List<Entry> getAllEntries(@RequestParam("language") long language){
+    public List<EntryEntity> getAllEntries(@RequestParam("language") long language){
         return entryService.findByLanguage(language);
     }
     @GetMapping("/find_entries_in_dictionary")
-    public List<Entry> findEntriesInDictionary(@RequestParam("pattern") String pattern, @RequestParam("language") long language){
-        return entryService.getEntriesByOriginalOrTranslateInDictionary(pattern, language);
+    public List<EntryEntity> findEntriesInDictionary(@RequestParam("pattern") String pattern, @RequestParam("language") long language){
+        return entryService.findEntriesByOriginalOrTranslateInDictionary(pattern, language);
     }
     @GetMapping("/find_entries_anywhere")
-    public List<Entry> findEntriesAnywhere(@RequestParam("pattern") String pattern){
-        return entryService.getEntriesByOriginalOrTranslateAnywhere(pattern);
+    public List<EntryEntity> findEntriesAnywhere(@RequestParam("pattern") String pattern){
+        return entryService.findEntriesByOriginalOrTranslateAnywhere(pattern);
     }
     @GetMapping("/get_languages")
-    public List<Language> getAllLanguages(){
-        return languageService.readAll();
+    public List<LanguageEntity> getAllLanguages(){
+        return languageService.findAll();
     }
     @DeleteMapping("/delete_entry")
     public void deleteEntry(@RequestParam("entry_id") long entryId){
@@ -43,9 +43,9 @@ public class DictionaryDataController {
     }
 
     @PutMapping("/upload_entry")
-    public ResponseEntity<?> updateEntry(@RequestParam("entry_id") long entryId, @RequestBody EntryHolder entryHolder){
+    public ResponseEntity<?> updateEntry(@RequestBody EntryHolder entryHolder){
         entryHolder.getEntry().setLanguage(languageService.findById(entryHolder.getLanguageId()));
-        return entryService.update(entryId, entryHolder.getEntry()) ? new ResponseEntity<>(HttpStatus.OK) : new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        return entryService.update(entryHolder.getEntry()) ? new ResponseEntity<>(HttpStatus.OK) : new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
     @PostMapping("/upload_entry")
     public ResponseEntity<?> addEntry(@RequestBody EntryHolder entryHolder){
@@ -53,19 +53,19 @@ public class DictionaryDataController {
         return entryService.save(entryHolder.getEntry()) ? new ResponseEntity<>(HttpStatus.OK) : new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
     public static class EntryHolder{
-        private Entry entry;
+        private EntryEntity entry;
         private Long languageId;
 
-        public EntryHolder(Entry entry, Long languageId) {
+        public EntryHolder(EntryEntity entry, Long languageId) {
             this.entry = entry;
             this.languageId = languageId;
         }
 
-        public Entry getEntry() {
+        public EntryEntity getEntry() {
             return entry;
         }
 
-        public void setEntry(Entry entry) {
+        public void setEntry(EntryEntity entry) {
             this.entry = entry;
         }
 

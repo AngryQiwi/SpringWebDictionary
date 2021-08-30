@@ -1,9 +1,11 @@
-package com.omnom.SpringDictionary.entities;
+package com.omnom.SpringDictionary.repositories.entry;
+
+import com.omnom.SpringDictionary.repositories.language.LanguageEntity;
 
 import javax.persistence.*;
 @Entity
-@Table
-public class Entry {
+@Table(name = "entry")
+public class EntryEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "entry_id")
@@ -14,27 +16,27 @@ public class Entry {
     private String translate;
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
     @JoinColumn(name = "language_id")
-    private Language language;
+    private LanguageEntity language;
 
-    public Entry(long entryId, String original, String translate, Language language) {
+    public EntryEntity(long entryId, String original, String translate, LanguageEntity language) {
         this.entryId = entryId;
         this.original = original;
         this.translate = translate;
         this.language = language;
     }
 
-    public Entry(String original, String translate, Language language) {
+    public EntryEntity(String original, String translate, LanguageEntity language) {
         this.original = original;
         this.translate = translate;
         this.language = language;
     }
 
-    public Entry(String original, String translate) {
+    public EntryEntity(String original, String translate) {
         this.original = original;
         this.translate = translate;
     }
 
-    public Entry() {
+    public EntryEntity() {
     }
 
     public Long getEntryId() {
@@ -61,11 +63,11 @@ public class Entry {
         this.translate = translate;
     }
 
-    public Language getLanguage() {
+    public LanguageEntity getLanguage() {
         return language;
     }
 
-    public void setLanguage(Language language) {
+    public void setLanguage(LanguageEntity language) {
         this.language = language;
     }
 }

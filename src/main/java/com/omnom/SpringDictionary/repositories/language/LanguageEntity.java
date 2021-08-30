@@ -1,13 +1,14 @@
-package com.omnom.SpringDictionary.entities;
+package com.omnom.SpringDictionary.repositories.language;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.omnom.SpringDictionary.repositories.entry.EntryEntity;
 
 import javax.persistence.*;
 import java.util.List;
 
 @Entity
 @Table(name = "language")
-public class Language {
+public class LanguageEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "language_id")
@@ -18,22 +19,22 @@ public class Language {
     private String regexp;
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "language", cascade = CascadeType.ALL)
     @JsonIgnore
-    private List<Entry> entries;
+    private List<EntryEntity> entries;
 
-    public Language(long languageId, String languageName, String regexp, List<Entry> entries) {
+    public LanguageEntity(long languageId, String languageName, String regexp, List<EntryEntity> entries) {
         this.id = languageId;
         this.languageName = languageName;
         this.regexp = regexp;
         this.entries = entries;
     }
 
-    public Language(String languageName, String regexp, List<Entry> entries) {
+    public LanguageEntity(String languageName, String regexp, List<EntryEntity> entries) {
         this.languageName = languageName;
         this.regexp = regexp;
         this.entries = entries;
     }
 
-    public Language() {
+    public LanguageEntity() {
     }
 
     public long getId() {
@@ -52,11 +53,11 @@ public class Language {
         this.languageName = languageName;
     }
 
-    public List<Entry> getEntries() {
+    public List<EntryEntity> getEntries() {
         return entries;
     }
 
-    public void setEntries(List<Entry> entries) {
+    public void setEntries(List<EntryEntity> entries) {
         this.entries = entries;
     }
 

@@ -35,9 +35,10 @@
         let translateStr = document.getElementById("translate").value.length != 0 ? document.getElementById("translate").value : new URLSearchParams(window.location.search).get('value');
                 $.ajax({
                 type: 'PUT',
-                url: "/upload_entry?entry_id="+new URLSearchParams(window.location.search).get('entryId'),
+                url: "/upload_entry",
                 data: JSON.stringify({
                     entry: {
+                        entryId: new URLSearchParams(window.location.search).get('entryId'),
                         original: originalStr,
                         translate: translateStr
                     },

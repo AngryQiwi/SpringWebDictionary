@@ -1,45 +1,42 @@
 package com.omnom.SpringDictionary.services;
 
-import com.omnom.SpringDictionary.entities.Language;
-import com.omnom.SpringDictionary.repositories.LanguageRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.omnom.SpringDictionary.repositories.language.LanguageEntity;
+import com.omnom.SpringDictionary.repositories.language.LanguageRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
-@Transactional
 public class LanguageService {
     private final LanguageRepository repository;
-    @Autowired
+
     public LanguageService(LanguageRepository repository) {
         this.repository = repository;
     }
-    public List<Language> readAll() {
-        return repository.findAll();
+
+    public List<LanguageEntity> findAll() {
+        return (List<LanguageEntity>) repository.findAll();
     }
 
-    public Language findByLanguageName(String language) {
+    public LanguageEntity findByLanguageName(String language) {
         return repository.findByLanguageName(language);
     }
 
-    public void save(Language language) {
+    public void save(LanguageEntity language) {
         repository.save(language);
     }
 
-    public void update(long id, Language language) {
+    public void update(long id, LanguageEntity language) {
         if (repository.existsById(id)) {
             language.setId(id);
             repository.save(language);
         }
     }
-    public Language findById(long id){
-        return repository.getById(id);
+    public LanguageEntity findById(long id){
+        return repository.findById(id).orElse(null);
     }
     public void delete(long id) {
-        if (repository.existsById(id)) {
-            repository.delete(repository.getById(id));
-        }
+        repository.deleteById(id);
     }
 }

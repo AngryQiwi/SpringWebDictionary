@@ -1,8 +1,7 @@
 package com.omnom.SpringDictionary.services;
 
-import com.omnom.SpringDictionary.entities.Entry;
-import com.omnom.SpringDictionary.repositories.EntryRepository;
-import com.omnom.SpringDictionary.repositories.LanguageRepository;
+import com.omnom.SpringDictionary.repositories.entry.EntryEntity;
+import com.omnom.SpringDictionary.repositories.entry.EntryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -10,24 +9,21 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
-@Transactional
 public class EntryService {
     private final EntryRepository entryRepository;
-
-    @Autowired
     public EntryService(EntryRepository entryRepository) {
         this.entryRepository = entryRepository;
     }
 
-    public List<Entry> readAll() {
-        return entryRepository.findAll();
+    public List<EntryEntity> findAll() {
+        return (List<EntryEntity>) entryRepository.findAll();
     }
 
-    public List<Entry> findByLanguage(long language) {
+    public List<EntryEntity> findByLanguage(long language) {
         return entryRepository.findByLanguageId(language);
     }
 
-    public boolean save(Entry entry) {
+    public boolean save(EntryEntity entry) {
         String regex = entry.getLanguage().getRegexp();
         if(entry.getOriginal().matches(regex) && !entry.getTranslate().isEmpty()){
             entryRepository.save(entry);
@@ -36,10 +32,10 @@ public class EntryService {
         return false;
     }
 
-    public boolean update(long id, Entry entry) {
+    public boolean update(EntryEntity entry) {
         String regex = entry.getLanguage().getRegexp();
-        if (entryRepository.existsById(id) && entry.getOriginal().matches(regex) && !entry.getTranslate().isEmpty()) {
-            entry.setEntryId(id);
+        if (entryRepository.existsById(entry.getEntryId()) && entry.getOriginal().matches(regex) && !entry.getTranslate().isEmpty()) {
+            entry.setEntryId(entry.getEntryId());
             entryRepository.save(entry);
             return true;
         }
@@ -47,23 +43,21 @@ public class EntryService {
     }
 
     public void delete(long id) {
-        if (entryRepository.existsById(id)) {
-            entryRepository.delete(entryRepository.getById(id));
-        }
+        entryRepository.deleteById(id);
     }
 
-    public List<Entry> getEntriesByOriginalOrTranslateInDictionary(String pattern, long language) {
-        List<Entry> fundedEntries;
+    public List<EntryEntity> findEntriesByOriginalOrTranslateInDictionary(String pattern, long language) {
+        List<EntryEntity> fundedEntries;
         fundedEntries = entryRepository.findByOriginalContainsAndLanguageId(pattern, language);
-        for (Entry fundedEntry : entryRepository.findByTranslateContainsAndLanguageId(pattern, language)) {
+        for (EntryEntity fundedEntry : entryRepository.findByTranslateContainsAndLanguageId(pattern, language)) {
             if(!fundedEntries.contains(fundedEntry)){
                 fundedEntries.add(fundedEntry);
             }
         }
         return fundedEntries;
     }
-    public List<Entry> getEntriesByOriginalOrTranslateAnywhere(String pattern){
-        List<Entry> fundedEntries;
+    public List<EntryEntity> findEntriesByOriginalOrTranslateAnywhere(String pattern){
+        List<EntryEntity> fundedEntries;
         fundedEntries = entryRepository.findByOriginalContains(pattern);
         fundedEntries.addAll(entryRepository.findByTranslateContains(pattern));
         return fundedEntries;

@@ -1,16 +1,14 @@
 package com.omnom.SpringDictionary;
 
-import com.omnom.SpringDictionary.entities.Entry;
+import com.omnom.SpringDictionary.repositories.entry.EntryEntity;
 import com.omnom.SpringDictionary.services.EntryService;
 import com.omnom.SpringDictionary.services.LanguageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpSession;
 
@@ -44,7 +42,7 @@ public class DictionaryViewingController {
 
     @GetMapping("/edit_entry")
     public String editPage(@RequestParam("entryId") long id, @RequestParam("key") String original, @RequestParam("value") String translate, @RequestParam("language") long language, HttpSession session) {
-        session.setAttribute("entry", new Entry(id, original, translate, languageService.findById(id)));
+        session.setAttribute("entry", new EntryEntity(id, original, translate, languageService.findById(id)));
         return "addEntry";
     }
 }
